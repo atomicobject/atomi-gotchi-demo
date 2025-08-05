@@ -6,8 +6,7 @@ import { Pet } from "@/components/Pet";
 import { PetMood } from "@/types/pet";
 import { Button, Paper, Stack, Typography, Box } from "@mui/material";
 import { set } from "react-hook-form";
-import {
-  Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const choices = [
@@ -61,11 +60,12 @@ export const RockPaperScissors = () => {
     void loadPet();
   }, [getPet]);
 
-  useEffect(() => { //dead pet modal
-  if (pet && pet.health === 0) {
-    setShowDeadModal(true);
-  }
-}, [pet]);
+  useEffect(() => {
+    //dead pet modal
+    if (pet && pet.health === 0) {
+      setShowDeadModal(true);
+    }
+  }, [pet]);
 
   const handlePlay = () => {
     setPlayerChoice(null);
@@ -94,17 +94,16 @@ export const RockPaperScissors = () => {
     });
 
     //update mood per turn
-    if(res === "Won") {
-        setPetMood(PetMood.HAPPY);
-    } else if(res === "Lost") {
-        setPetMood(PetMood.SAD);
+    if (res === "Won") {
+      setPetMood(PetMood.HAPPY);
+    } else if (res === "Lost") {
+      setPetMood(PetMood.SAD);
     } else {
-        setPetMood(PetMood.NEUTRAL);
+      setPetMood(PetMood.NEUTRAL);
     }
     setRound((prev) => prev + 1);
   };
 
- 
   const handleFinalResults = async (results: string[]) => {
     const won = results.filter((r) => r === "Won").length;
     const lost = results.filter((r) => r === "Lost").length;
@@ -157,7 +156,6 @@ export const RockPaperScissors = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-        
       <Box sx={{ width: 400, mx: "auto", mb: 1 }}>
         <Box sx={{ mb: 1 }}>
           <Pet mood={petMood} />
@@ -281,22 +279,21 @@ export const RockPaperScissors = () => {
         </Paper>
       )}
       <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
-  <DialogTitle>Game Over</DialogTitle>
-  <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
-  <DialogActions>
-    <Button
-      onClick={() => {
-        localStorage.removeItem("currentPet");
-        setShowDeadModal(false);
-        navigate("/");
-      }}
-      autoFocus
-    >
-      Create New Pet
-    </Button>
-  </DialogActions>
-</Dialog>
-
+        <DialogTitle>Game Over</DialogTitle>
+        <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              localStorage.removeItem("currentPet");
+              setShowDeadModal(false);
+              navigate("/");
+            }}
+            autoFocus
+          >
+            Create New Pet
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

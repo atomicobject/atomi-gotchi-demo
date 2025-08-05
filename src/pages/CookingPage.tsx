@@ -2,7 +2,8 @@ import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { Panel } from "@/components/Panel";
 
 export function CookingPage() {
-  const animatedBg = typeof window !== "undefined" ? localStorage.getItem("animatedBg") !== "false" : true;
+  const animatedBg =
+    typeof window !== "undefined" ? localStorage.getItem("animatedBg") !== "false" : true;
 
   return (
     <AnimatedBackground animated={animatedBg}>

@@ -13,9 +13,7 @@ export const PetInfoCard = (props: Props) => {
         {props.petInfo.name}
       </Typography>
       <Pet mood={props.petInfo.mood} />
-      <Typography variant="body1">
-        {getPetMoodDescription(props.petInfo)}
-      </Typography>
+      <Typography variant="body1">{getPetMoodDescription(props.petInfo)}</Typography>
       <Stack flexDirection="row" gap={1}>
         <Typography variant="body1">❤️</Typography>
         {getHealthBar(props.petInfo.health)}
@@ -38,8 +36,7 @@ const getPetMoodDescription = (petInfo: PetInfo) => {
   const hungerWeight = 0.3;
 
   const composite =
-    (petInfo.health * healthWeight + petInfo.hunger * hungerWeight) /
-    (healthWeight + hungerWeight);
+    (petInfo.health * healthWeight + petInfo.hunger * hungerWeight) / (healthWeight + hungerWeight);
 
   if (composite < 33) {
     return `${petInfo.name} seems sad.`;

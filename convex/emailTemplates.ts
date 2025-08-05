@@ -1,13 +1,37 @@
 // TODO: Change this to be the main branch before merging
-const GIF_FOLDER =
-  "https://raw.githubusercontent.com/bo-french/atomi-gotchi/main/public/gifs";
+const GIF_FOLDER = "https://raw.githubusercontent.com/bo-french/atomi-gotchi/main/public/gifs";
+
+export const enum EmailTemplates {
+  HUNGRY,
+}
+
+export const getEmailTemplate = (
+  template: EmailTemplates,
+  pet: { name: string; health: number; hunger: number; mood: string }
+) => {
+  let emailContent = "";
+
+  switch (template) {
+    case EmailTemplates.HUNGRY:
+      emailContent += `<p>${pet.name} is feeling hungry!</p>
+    <p>Click <a href="https://atomigotchi.atomicobject.com/cooking">here</a> to feed your pet!</p>
+    `;
+      break;
+  }
+
+  emailContent += `
+    <img src="${GIF_FOLDER}/${pet.mood}.gif" alt="Virtual Pet" width="200" height="200">
+    <br> 
+  `;
+  return emailContent;
+};
 
 export const emailTemplates = {
-    default: `
+  default: `
     <h1>🐾 Your Virtual Pet Says Hello!</h1>
     <p>Welcome to the Virtual Pet Email Game!</p>
     <img src="${GIF_FOLDER}/happy.gif" alt="Virtual Pet" width="200" height="200">
-    <br> `, 
+    <br> `,
 
   hungry: {
     html: (opts: {

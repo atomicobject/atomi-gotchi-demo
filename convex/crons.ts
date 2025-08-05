@@ -4,10 +4,9 @@ import { internal } from "./_generated/api";
 const crons = cronJobs();
 
 // crons.interval(
-//   "send email to georgia", 
-//   { minutes: 1 }, 
+//   "Send pet hungry emails",
+//   { minutes: 1 },
 //   internal.internalActions.hungryEmail.hungryEmail
 // );
 
 export default crons;
-

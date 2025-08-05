@@ -3,30 +3,16 @@
 import { v } from "convex/values";
 import { Resend } from "resend";
 import { action, internalAction } from "./_generated/server";
-import { emailTemplates } from "./emailTemplates";
 
-// Shared email sending logic
-async function sendEmailHelper(args: {
-  email: string;
-  subject?: string;
-  message?: string;
-  emailEnabled?: boolean;
-}) {
-  // Check if email sending is enabled (from localStorage via args)
-  if (args.emailEnabled === false) {
-    return {
-      success: false,
-      error: "Email sending is disabled by user settings.",
-    };
-  }
+async function sendEmailHelper(args: { email: string; subject: string; message: string }) {
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "Virtual Pet <yourpet@atomigotchi.atomicobject.com>",
+      from: "Atomi-Gotchi",
       to: [args.email],
-      subject: args.subject || "Hello from your Virtual Pet! 🐾",
-      html: args.message || emailTemplates.default,
+      subject: args.subject,
+      html: args.message,
     });
 
     if (error) {
@@ -45,8 +31,7 @@ async function sendEmailHelper(args: {
     console.error("Email sending failed:", error);
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : "Unknown error occurred",
+      error: error instanceof Error ? error.message : "Unknown error occurred",
     };
   }
 }
@@ -54,9 +39,8 @@ async function sendEmailHelper(args: {
 export const sendEmail = action({
   args: {
     email: v.string(),
-    subject: v.optional(v.string()),
-    message: v.optional(v.string()),
-    emailEnabled: v.optional(v.boolean()),
+    subject: v.string(),
+    message: v.string(),
   },
   returns: v.object({
     success: v.boolean(),
@@ -72,9 +56,8 @@ export const sendEmail = action({
 export const sendEmailInternal = internalAction({
   args: {
     email: v.string(),
-    subject: v.optional(v.string()),
-    message: v.optional(v.string()),
-    emailEnabled: v.optional(v.boolean()),
+    subject: v.string(),
+    message: v.string(),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
@@ -82,4 +65,3 @@ export const sendEmailInternal = internalAction({
     return null;
   },
 });
-// To use: pass emailEnabled from frontend when calling this action

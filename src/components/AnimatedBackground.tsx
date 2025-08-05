@@ -65,9 +65,7 @@ export const AnimatedBackground = ({ children, animated = true }: AnimatedBackgr
           },
         }}
       />
-      <Box sx={{ position: "relative", zIndex: 1, width: "100%" }}>
-        {children}
-      </Box>
+      <Box sx={{ position: "relative", zIndex: 1, width: "100%" }}>{children}</Box>
     </Box>
   );
 };

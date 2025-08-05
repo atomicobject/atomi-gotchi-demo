@@ -21,7 +21,7 @@ export const updateHealth = mutation({
   handler: async (ctx, args) => {
     try {
       const pet = await ctx.db.get(args.petId);
-      if (!pet || !('health' in pet)) {
+      if (!pet || !("health" in pet)) {
         return {
           success: false,
           error: "Pet not found",
@@ -39,7 +39,7 @@ export const updateHealth = mutation({
         lastInteractionAt: new Date().toISOString(),
       };
 
-      if (args.satisfyEmailAction && pet.pendingEmailAction === args.satisfyEmailAction) {
+      if (args.satisfyEmailAction) {
         updates.pendingEmailAction = null;
         updates.emailSentAt = null;
       }
@@ -51,8 +51,6 @@ export const updateHealth = mutation({
         success: true,
         health: newHealth,
         lastInteractionAt: updates.lastInteractionAt,
-        pendingEmailAction: updated?.pendingEmailAction,
-        emailSentAt: updated?.emailSentAt,
       };
     } catch (e) {
       return {
