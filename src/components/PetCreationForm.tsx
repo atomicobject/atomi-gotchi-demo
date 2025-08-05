@@ -15,6 +15,7 @@ interface PetCreationFormData {
 interface Props {
   user: any; // TODO: this should be typed
   onSubmitPetForm: (message: RequestMessage) => void;
+  notice?: string;
 }
 
 export const PetCreationForm = (props: Props) => {
@@ -100,6 +101,24 @@ export const PetCreationForm = (props: Props) => {
       style={{ width: "100%" }}
     >
       <Stack width="100%" alignItems="center" gap={2}>
+        {props.notice && (
+          <Box
+            sx={{
+              backgroundColor: "#e3f7ff",
+              borderRadius: 2,
+              padding: "8px 16px",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <span role="img" aria-label="info">
+              ℹ️
+            </span>
+            <Typography variant="body1">{props.notice}</Typography>
+          </Box>
+        )}
         <Typography variant="h1" align="center">
           {petCreated ? `${petName} says hello!` : "Create Your Pet!"}
         </Typography>

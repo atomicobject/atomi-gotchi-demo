@@ -44,10 +44,14 @@ export const SignUpForm = (props: Props) => {
     });
 
     if (result?.success) {
+      // Save user to localStorage so ProtectedRoute works
+      localStorage.setItem("currentUser", JSON.stringify({ email: data.email }));
       props.onSubmit({
         type: "success",
         text: "Sign up successful!",
       });
+      // Redirect to pet creation page
+      window.location.href = "/pet-creation";
     } else {
       props.onSubmit({
         type: "error",

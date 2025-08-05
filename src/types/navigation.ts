@@ -3,5 +3,7 @@ export const ROUTES = {
   login: "/login",
   signup: "/sign-up",
   simonSays: "/simon-says",
-  higherLower: "/higher-lower"
+  cooking: "/cooking",
+  higherLower: "/higher-lower",
+  rockPaperScissors: "/rock-paper-scissors",
 };

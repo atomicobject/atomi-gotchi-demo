@@ -1,3 +1,4 @@
+import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { PanelCard } from "@/components/PanelCard";
 import { SignUpForm } from "@/components/SignUpForm";
 import { RequestMessage } from "@/types/login";
@@ -15,17 +16,20 @@ export const SignUpPage = () => {
     setHideSignUpForm(message.type === "success");
   };
 
+  const animatedBg = localStorage.getItem("animatedBg") !== "false";
   return (
-    <PanelCard message={message} showLogo>
-      {!hideSignUpForm && <SignUpForm onSubmit={onSignUp} />}
-      <Stack direction="row" alignItems="center">
-        <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-          Already have an account?
-        </Typography>
-        <Button component={Link} to={ROUTES.login} variant="text">
-          Login here
-        </Button>
-      </Stack>
-    </PanelCard>
+    <AnimatedBackground animated={animatedBg}>
+      <PanelCard message={message} showLogo>
+        {!hideSignUpForm && <SignUpForm onSubmit={onSignUp} />}
+        <Stack direction="row" alignItems="center">
+          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            Already have an account?
+          </Typography>
+          <Button component={Link} to={ROUTES.login} variant="text">
+            Login here
+          </Button>
+        </Stack>
+      </PanelCard>
+    </AnimatedBackground>
   );
 };

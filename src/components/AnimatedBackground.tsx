@@ -3,9 +3,10 @@ import { ReactNode } from "react";
 
 interface AnimatedBackgroundProps {
   children: ReactNode;
+  animated?: boolean;
 }
 
-export const AnimatedBackground = ({ children }: AnimatedBackgroundProps) => {
+export const AnimatedBackground = ({ children, animated = true }: AnimatedBackgroundProps) => {
   const theme = useTheme();
   const primaryColor = theme.palette.primary.main;
   const darkerBlue = theme.palette.primary.dark;
@@ -37,7 +38,7 @@ export const AnimatedBackground = ({ children }: AnimatedBackgroundProps) => {
             ) 0 0/180px 180px
           `,
           transform: "rotate(45deg)",
-          animation: "scrollDown 8s linear infinite",
+          animation: animated ? "scrollDown 8s linear infinite" : undefined,
           "&::before": {
             content: '""',
             position: "absolute",

@@ -5,9 +5,11 @@ import { AnimatedBackground } from "./components/AnimatedBackground";
 import { HomePage } from "./pages/HomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { SignUpPage } from "./pages/SignUpPage";
+import { CookingPage } from "./pages/games/CookingPage";
 import { SimonSaysPage } from "@/pages/games/SimonSaysPage";
 import { HigherLowerPage } from "@/pages/games/HigherOrLower";
 
+import { RockPaperScissors } from "@/pages/games/RockPaperScissors";
 
 // Simple auth state management
 const useAuth = () => {
@@ -86,6 +88,14 @@ export default function App() {
           }
         />
         <Route
+          path={ROUTES.cooking}
+          element={
+            <ProtectedRoute>
+              <CookingPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path={ROUTES.higherLower}
           element={
             <ProtectedRoute>
@@ -94,6 +104,14 @@ export default function App() {
           }
         />
         
+        <Route 
+          path={ROUTES.rockPaperScissors}
+          element={
+            <ProtectedRoute>
+              <RockPaperScissors />
+            </ProtectedRoute>
+          }
+        />
         {/* Default redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 

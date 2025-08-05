@@ -10,6 +10,7 @@ export const sendEmail = action({
     email: v.string(),
     subject: v.optional(v.string()),
     message: v.optional(v.string()),
+    emailEnabled: v.optional(v.boolean()), // New argument to check if email sending is enabled
   },
   returns: v.object({
     success: v.boolean(),
@@ -17,11 +18,18 @@ export const sendEmail = action({
     error: v.optional(v.string()),
   }),
   handler: async (ctx, args) => {
+    // Check if email sending is enabled (from localStorage via args)
+    if (args.emailEnabled === false) {
+      return {
+        success: false,
+        error: "Email sending is disabled by user settings.",
+      };
+    }
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "Virtual Pet <onboarding@resend.dev>", // Replace with your verified domain
+        from: "Virtual Pet <yourpet@atomigotchi.atomicobject.com>",
         to: [args.email],
         subject: args.subject || "Hello from your Virtual Pet! 🐾",
         html: args.message || emailTemplates.default,
@@ -49,3 +57,4 @@ export const sendEmail = action({
     }
   },
 });
+// To use: pass emailEnabled from frontend when calling this action

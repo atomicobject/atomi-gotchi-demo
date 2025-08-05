@@ -1,30 +1,48 @@
-// src/pages/HigherLowerPage.tsx
+// src/pages/games/HigherOrLower.tsx
 import { BackToHome } from "@/components/BackToHome";
 import { Panel } from "@/components/Panel";
 import { Pet } from "@/components/Pet";
 import { PetMood, ANIMATION_TIME } from "@/types/pet";
-import { Box, Button, Stack, Typography, Snackbar, Alert } from "@mui/material";
-import { useState } from "react";
+import { Box, Button, Stack, Typography, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { useState, useEffect } from "react";
+import { useMutation } from "convex/react";
+import { api } from "../../../convex/_generated/api";
+import { useNavigate } from "react-router-dom";
 
 // helper to get 1–100
 const randomNumber = () => Math.floor(Math.random() * 100) + 1;
 
+const deriveMoodFromHealth = (health: number): PetMood => {
+if (health < 33) return PetMood.SAD;
+if (health < 66) return PetMood.NEUTRAL;
+return PetMood.HAPPY;
+};
+
+const getCombinedMood = (pet: any) => {
+  if (pet?.health === 0) return { label: 'dead', text: `${pet.name} has died.` };
+  const composite = 0.7 * pet.health + 0.3 * pet.hunger;
+  if (composite < 33) return { label: 'sad', text: `${pet.name} seems sad.` };
+  if (composite >= 80) return { label: 'happy', text: `${pet.name} seems happy.` };
+  return { label: 'okay', text: `${pet.name} seems okay.` };
+};
+
 export const HigherLowerPage = () => {
-    const [current, setCurrent] = useState<number>(randomNumber());
-    const [next, setNext] = useState<number | null>(null);
-    const [canGuess, setCanGuess] = useState(true);
-    const [petMood, setPetMood] = useState<PetMood>(PetMood.HAPPY);
-    const [score, setScore] = useState(0);
-    const [highScore, setHighScore] = useState(0);  
-    const [feedback, setFeedback] = useState<{
-            message: string;
-            severity: "success" | "error";
-            open: boolean;
-        }>({
-            message: "",
-            severity: "success",
-            open: false,
-        });
+const [current, setCurrent] = useState<number>(randomNumber());
+const [next, setNext] = useState<number | null>(null);
+const [canGuess, setCanGuess] = useState(true);
+const [petMood, setPetMood] = useState<PetMood>(PetMood.HAPPY);
+const [score, setScore] = useState(0);
+const [highScore, setHighScore] = useState(0);
+const [triesLeft, setTriesLeft] = useState(5);
+const [feedback, setFeedback] = useState<{
+message: string;
+severity: "success" | "error";
+open: boolean;
+}>({
+message: "",
+severity: "success",
+open: false,
+});
 
 const [pet, setPet] = useState<any | null>(null);
 const getPet = useMutation(api.mutations.getPet.getPet);
@@ -73,11 +91,9 @@ while (drawn === current) {
 }
 setNext(drawn);
 
-        // check correctness
-        const correct = guessHigher ? drawn > current : drawn < current;
+const correct = guessHigher ? drawn > current : drawn < current;
 
-        // update mood
-        setPetMood(correct ? PetMood.EXCITED : PetMood.SAD);
+setPetMood(correct ? PetMood.EXCITED : PetMood.SAD);
 
 if (pet) {
     try {
@@ -181,65 +197,142 @@ if (!started) {
   );
 }
 
-    return (
-        <Panel
+return (
+<Panel
+    sx={{
+    width: 500,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 2,
+    }}
+>
+    <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
+      <DialogTitle>Game Over</DialogTitle>
+      <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
+      <DialogActions>
+        <Button onClick={() => {
+          localStorage.removeItem("currentPet");
+          setShowDeadModal(false);
+          navigate("/");
+        }} autoFocus>
+          Create New Pet
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    <Box sx={{ mb: 1 }}>
+    <Pet mood={petMood} />
+    {combinedMood && (
+      <Typography variant="subtitle1" sx={{ mt: 1 }}>
+        {combinedMood.text}
+      </Typography>
+    )}
+    </Box>
+
+    {pet ? (
+    <Box sx={{ width: "100%", mb: 1 }}>
+        <Typography vafriant="subtitle1" sx={{ mb: 0.5 }}>
+        ❤️ Health:
+        </Typography>
+        <Box
         sx={{
-            width: 500,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 2,
+            position: "relative",
+            height: 20,
+            width: "100%",
+            backgroundColor: "#ddd",
+            borderRadius: 1,
+            overflow: "hidden",
         }}
         >
-        <Box sx={{ mb: 1 }}>
-            <Pet mood={petMood} />
+        <Box
+            sx={{
+            height: "100%",
+            width: `${health}%`,
+            backgroundColor: healthColor,
+            transition: "width 0.5s ease",
+            }}
+        />
+        <Typography
+            variant="body2"
+            sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontWeight: "bold",
+            color: "#000",
+            userSelect: "none",
+            }}
+        >
+            {health}%
+        </Typography>
         </Box>
+    </Box>
+    ) : (
+    <Typography variant="subtitle1" sx={{ mb: 1 }}>
+        Health: N/A
+    </Typography>
+    )}
 
-        <Typography variant="h6">Score: {score} | High Score: {highScore}</Typography>
-        <Snackbar
-            open={feedback.open}
-            autoHideDuration={1500}
-            onClose={() => setFeedback(prev => ({ ...prev, open: false }))}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-            >
-            <Alert
-                onClose={() => setFeedback(prev => ({ ...prev, open: false }))}
-                severity={feedback.severity}
-                variant="filled"
-                sx={{ width: "100%" }}
-            >
-                {feedback.message}
-            </Alert>
-        </Snackbar>
+    <Typography variant="h6">
+    Score: {score} | High Score: {highScore}
+    </Typography>
+    <Typography variant="subtitle1">Tries left: {triesLeft}</Typography>
 
+    <Snackbar
+    open={feedback.open}
+    autoHideDuration={1500}
+    onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
+    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+    <Alert
+        onClose={() => setFeedback((prev) => ({ ...prev, open: false }))}
+        severity={feedback.severity}
+        variant="filled"
+        sx={{ width: "100%" }}
+    >
+        {feedback.message}
+    </Alert>
+    </Snackbar>
+
+    {triesLeft === 0 ? (
+    <Box
+        sx={{
+        mt: 3,
+        p: 2,
+        border: "2px solid",
+        borderColor: "error.main",
+        borderRadius: 2,
+        textAlign: "center",
+        width: "100%",
+        }}
+    >
+        <Typography variant="h5" sx={{ mb: 2 }}>
+        Game Over
+        </Typography>
+    </Box>
+    ) : (
+    <>
         <Stack direction="row" spacing={4} alignItems="center">
-            <Typography variant="h3">{current}</Typography>
-            <Typography variant="h3">
-            {next !== null ? next : "?"}
-            </Typography>
+        <Typography variant="h3">{current}</Typography>
+        <Typography variant="h3">{next !== null ? next : "?"}</Typography>
         </Stack>
 
         <Stack direction="row" spacing={2}>
-            <Button
-            variant="contained"
-            disabled={!canGuess}
-            onClick={() => handleGuess(true)}
-            >
+        <Button variant="contained" disabled={!canGuess || triesLeft <= 0 || pet?.health === 0} onClick={() => void handleGuess(true)}>
             Higher
-            </Button>
-            <Button
-            variant="contained"
-            disabled={!canGuess}
-            onClick={() => handleGuess(false)}
-            >
+        </Button>
+        <Button variant="contained" disabled={!canGuess || triesLeft <= 0 || pet?.health === 0} onClick={() => void handleGuess(false)}>
             Lower
-            </Button>
+        </Button>
         </Stack>
+    </>
+    )}
 
-
-        <Box sx={{ mt: 3 }}>
-            <BackToHome />
-        </Box>
-        </Panel>
-    );
-    };
+    <Box sx={{ mt: 3 }}>
+    <BackToHome />
+    </Box>
+</Panel>
+);
+};

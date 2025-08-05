@@ -1,0 +1,50 @@
+name: Dispatch Pet Emails
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"   # every 30 minutes UTC
+  workflow_dispatch: {}
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Invoke dispatchEmails
+        env:
+          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
+          CONVEX_API_KEY: ${{ secrets.CONVEX_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+        run: |
+          node - <<'JS'
+          import { ConvexClient } from "convex";
+          const deployment = process.env.CONVEX_DEPLOYMENT;
+          if (!deployment) {
+            console.error("Missing CONVEX_DEPLOYMENT");
+            process.exit(1);
+          }
+          const client = new ConvexClient(deployment, {
+            apiKey: process.env.CONVEX_API_KEY || undefined,
+          });
+          (async () => {
+            try {
+              console.log("Calling dispatchEmails mutation...");
+              const result = await client.mutation("dispatchEmails", {});
+              console.log("Result:", result);
+            } catch (e) {
+              console.error("Error invoking dispatchEmails:", e);
+              process.exit(1);
+            }
+          })();
+          JS
