@@ -59,8 +59,9 @@ export const HigherLowerPage = () => {
   const getPet = useMutation(api.mutations.getPet.getPet);
   const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
 
-  const navigate = useNavigate();
-  const [showDeadModal, setShowDeadModal] = useState(false);
+const navigate = useNavigate();
+const [showDeadModal, setShowDeadModal] = useState(false);
+const [started, setStarted] = useState(false);
 
   useEffect(() => {
     const loadPet = async () => {
@@ -103,31 +104,65 @@ export const HigherLowerPage = () => {
 
     const correct = guessHigher ? drawn > current : drawn < current;
 
-    setPetMood(correct ? PetMood.EXCITED : PetMood.SAD);
+const combinedMood = pet ? getCombinedMood(pet) : null;
 
+const handleGuess = async (guessHigher: boolean) => {
+if ((pet && pet.health === 0) || triesLeft <= 0 || !canGuess) return;
+setCanGuess(false);
+setTriesLeft((prev) => prev - 1);
+
+let drawn = randomNumber();
+while (drawn === current) {
+    drawn = randomNumber();
+}
+setNext(drawn);
+
+const correct = guessHigher ? drawn > current : drawn < current;
+
+setPetMood(correct ? PetMood.EXCITED : PetMood.SAD);
+
+if (pet) {
+    try {
+    const delta = correct ? 10 : -5;
+    const result = await updateHealth({ petId: pet.id, delta });
+    console.log("updateHealth result:", result);
+    window.dispatchEvent(new CustomEvent("pet-updated"));
+    console.log("Dispatched pet-updated event");
+if (result.success) {
+    const updatedPet = { ...pet, health: result.health, lastInteractionAt: result.lastInteractionAt };
+    setPet(updatedPet);
+    localStorage.setItem("currentPet", JSON.stringify(updatedPet));
+    // update mood immediately based on new health if wrong (since you override earlier)
+    if (!correct) {
+        setPetMood(deriveMoodFromHealth(result.health));
+    }
+}    } catch {
+    // ignore failure
+    }
+}
+
+setTimeout(() => {
+    // Generate a fresh current number for the next round
+    setCurrent(randomNumber());
+    // Hide the next number until the user guesses again
+    setNext(null);
+    // Re-enable guessing
+    setCanGuess(true);
+
+    // Update score if correct
+    if (correct) {
+      setScore((prev) => {
+        const newScore = prev + 1;
+        if (newScore > highScore) setHighScore(newScore);
+        return newScore;
+      });
+    }
+
+    // Reset pet mood
     if (pet) {
-      try {
-        const delta = correct ? 5 : -5;
-        const result = await updateHealth({ petId: pet.id, delta });
-        console.log("updateHealth result:", result);
-        window.dispatchEvent(new CustomEvent("pet-updated"));
-        console.log("Dispatched pet-updated event");
-        if (result.success) {
-          const updatedPet = {
-            ...pet,
-            health: result.health,
-            lastInteractionAt: result.lastInteractionAt,
-          };
-          setPet(updatedPet);
-          localStorage.setItem("currentPet", JSON.stringify(updatedPet));
-          // update mood immediately based on new health if wrong (since you override earlier)
-          if (!correct) {
-            setPetMood(deriveMoodFromHealth(result.health));
-          }
-        }
-      } catch {
-        // ignore failure
-      }
+      setPetMood(deriveMoodFromHealth(pet.health));
+    } else {
+      setPetMood(PetMood.HAPPY);
     }
 
     setTimeout(() => {
@@ -149,12 +184,74 @@ export const HigherLowerPage = () => {
       }
     }, ANIMATION_TIME * 2);
 
-    setFeedback({
-      message: correct ? "Nice! You're right!" : "Oops! Wrong guess.",
-      severity: correct ? "success" : "error",
-      open: true,
-    });
-  };
+// Show rules screen if not started
+if (!started) {
+  return (
+    <Panel
+      sx={{
+        width: 500,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 4,
+        boxShadow: 3,
+      }}
+    >
+      <Typography
+        variant="h4"
+        align="center"
+        fontWeight={700}
+        sx={{ color: '#1976d2' }}
+      >
+        🎉 Higher or Lower 🎉
+      </Typography>
+      <Typography
+        variant="body2"
+        align="center"
+        sx={{ px: 3, mb: 2, lineHeight: 1.5 }}
+      >
+        <strong>How to Play</strong><br/>
+        You'll see a <strong>current number</strong> on the left and a <strong>“?”</strong> on the right hiding the next number. Guess whether the hidden number will be <strong>higher</strong> or <strong>lower</strong> than the current one. You can play the game <strong>5 times</strong>!<br/><br/>
+        <strong>What happens next:</strong><br/>
+        - If you're right, your pet's health gets a <strong>boost</strong> and your score climbs.<br/>
+        - If you're wrong, your pet's health takes a <strong>small hit</strong>, but don't worry - you've got this! 🐾<br/><br/>
+      </Typography>
+      <Button
+        variant="contained"
+        size="small"
+        sx={{ borderRadius: 4, textTransform: 'none', fontWeight: 600 }}
+        onClick={() => setStarted(true)}
+      >
+        Start Playing!
+      </Button>
+    </Panel>
+  );
+}
+
+return (
+<Panel
+    sx={{
+    width: 500,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 2,
+    }}
+>
+    <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
+      <DialogTitle>Game Over</DialogTitle>
+      <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
+      <DialogActions>
+        <Button onClick={() => {
+          localStorage.removeItem("currentPet");
+          setShowDeadModal(false);
+          navigate("/");
+        }} autoFocus>
+          Create New Pet
+        </Button>
+      </DialogActions>
+    </Dialog>
 
   const health = pet ? pet.health : 0;
   let healthColor = "#4caf50";
