@@ -30,7 +30,7 @@ const getStatBar = (label: string, stat: number) => {
   `;
 };
 
-const URL = "http://localhost:5173"; //"https://atomigotchi.atomicobject.com";
+const URL = "https://atomigotchi.atomicobject.com";
 
 export const getEmailTemplate = (
   template: EmailTemplates,
