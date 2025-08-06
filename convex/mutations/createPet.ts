@@ -16,7 +16,6 @@ export const createPet = mutation({
   ),
   handler: async (ctx, args) => {
     try {
-      // First find the user by email
       const user = await ctx.db
         .query("users")
         .withIndex("by_email", (q) => q.eq("email", args.email))
@@ -35,9 +34,6 @@ export const createPet = mutation({
         hunger: 100,
         userId: user._id,
         mood: "happy",
-        lastInteractionAt: new Date().toISOString(),
-        lastEmail: new Date().toISOString()
-
       });
 
       return {
