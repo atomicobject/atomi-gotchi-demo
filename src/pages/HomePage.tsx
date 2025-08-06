@@ -132,8 +132,7 @@ export const HomePage = () => {
     <AnimatedBackground animated={animatedBg}>
       <PanelCard
         panelSx={{
-          height: 450,
-          width: 600,
+          width: 450,
           maxWidth: "95vw",
           mx: "auto",
           display: "flex",
@@ -160,14 +159,12 @@ export const HomePage = () => {
             <Stack direction="row" gap={1} sx={{ width: "100%", justifyContent: "center" }}>
               <Button
                 variant="contained"
-                sx={{ fontSize: 13, px: 1.5, py: 0.75, minWidth: 70, height: 28 }}
                 onClick={handleSettings}
               >
                 Settings
               </Button>
               <Button
                 variant="outlined"
-                sx={{ fontSize: 13, px: 1.5, py: 0.75, minWidth: 70, height: 28 }}
                 onClick={handleSignOut}
               >
                 Sign Out

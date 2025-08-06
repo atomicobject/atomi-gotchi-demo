@@ -43,7 +43,7 @@ const getPetMoodDescription = (petInfo: PetInfo) => {
   }
   // optionally add a “happy” tier if composite is high
   if (composite >= 80) {
-    return `${petInfo.name} seems happy.`;
+    return `${petInfo.name} seems happy!`;
   }
   return `${petInfo.name} seems okay.`;
 };

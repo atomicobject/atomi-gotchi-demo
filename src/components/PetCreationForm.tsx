@@ -7,6 +7,7 @@ import { useAction, useMutation } from "convex/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../convex/_generated/api";
+import { EmailTemplates, getEmailTemplate } from "../../convex/emailTemplates";
 
 interface PetCreationFormData {
   petName: string;
@@ -40,8 +41,19 @@ export const PetCreationForm = (props: Props) => {
       return;
     }
 
+    console.log(props.user?.email);
+
     try {
-      const result = await sendEmailAction({ email: props.user?.email });
+      const result = await sendEmailAction({
+        email: props.user?.email,
+        subject: "Atomi-Gotchi: Your pet has been created!",
+        message: getEmailTemplate(EmailTemplates.PET_CREATED, {
+          name: petName,
+          health: 100,
+          hunger: 100,
+          mood: PetMood.HAPPY,
+        }),
+      });
 
       if (result?.success) {
         props.onSubmitPetForm({

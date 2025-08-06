@@ -14,11 +14,9 @@ export const hungryEmail = internalAction({
         continue;
       }
 
-      console.log("Sending email to", user.email);
-
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
-        subject: "Hungry Email",
+        subject: `Atomi-Gotchi: It's time to feed your pet!`,
         message: getEmailTemplate(EmailTemplates.HUNGRY, user.pet),
       });
     }
