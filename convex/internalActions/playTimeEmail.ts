@@ -3,7 +3,7 @@ import { api, internal } from "../_generated/api";
 import { internalAction } from "../_generated/server";
 import { EmailTemplates, getEmailTemplate } from "../emailTemplates";
 
-export const playTimeEmail = internalAction({
+export const playtimeEmail = internalAction({
   args: {},
   returns: v.null(),
   handler: async (ctx) => {
@@ -22,7 +22,7 @@ export const playTimeEmail = internalAction({
         continue;
       }
 
-      await ctx.runMutation(api.mutations.updateHunger.updateHunger, {
+      await ctx.runMutation(api.mutations.updateHealth.updateHealth, {
         petId: pet._id,
         delta: -15,
       });
@@ -38,10 +38,22 @@ export const playTimeEmail = internalAction({
         continue;
       }
 
+      const gameType: EmailTemplates = (() => {
+        const randomNum = Math.floor(Math.random() * 3) + 1;
+        switch (randomNum) {
+          case 1:
+            return EmailTemplates.ROCK_PAPER_SCISSORS;
+          case 2:
+            return EmailTemplates.SIMON_SAYS;
+          default:
+            return EmailTemplates.ROCK_PAPER_SCISSORS;
+        }
+      })();
+
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
-        subject: `Atomi-Gotchi: It's time to feed your pet!`,
-        message: getEmailTemplate(EmailTemplates.HUNGRY, updatedPet),
+        subject: `Atomi-Gotchi: It's time to play with your pet!`,
+        message: getEmailTemplate(gameType, updatedPet),
       });
     }
 

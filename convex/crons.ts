@@ -3,11 +3,12 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.interval(
-  "Send pet playtime emails (every 10 minutes)",
-  { minutes: 10 },
-  internal.internalActions.hungryEmail.hungryEmail
-);
+// TODO: Leaving this in for more testing later
+// crons.interval(
+//   "Send pet playtime emails",
+//   { minutes: 1 },
+//   internal.internalActions.playtimeEmail.playtimeEmail
+// );
 
 crons.cron(
   "Send pet hungry emails (9am EDT)",
@@ -16,9 +17,15 @@ crons.cron(
 );
 
 crons.cron(
-  "Send pet hungry emails (6pm EDT)",
+  "Send pet playtime emails (12pm EDT)",
+  "0 16 * * *", // Run at 12pm EDT (16:00 UTC)
+  internal.internalActions.playtimeEmail.playtimeEmail
+);
+
+crons.cron(
+  "Send pet playtime emails (6pm EDT)",
   "0 22 * * *",
-  internal.internalActions.hungryEmail.hungryEmail
+  internal.internalActions.playtimeEmail.playtimeEmail
 );
 
 export default crons;

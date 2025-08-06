@@ -5,6 +5,9 @@ const GIF_FOLDER =
 export const enum EmailTemplates {
   PET_CREATED,
   HUNGRY,
+  SIMON_SAYS,
+  HIGHER_LOWER,
+  ROCK_PAPER_SCISSORS,
 }
 
 const getStatColor = (stat: number) => {
@@ -48,6 +51,24 @@ export const getEmailTemplate = (
     case EmailTemplates.HUNGRY:
       emailContent += `<p>${pet.name} is feeling hungry!</p>
     <p>Click <a href="${URL}/cooking">here</a> to feed your pet!</p>
+    `;
+      break;
+
+    case EmailTemplates.SIMON_SAYS:
+      emailContent += `<p>${pet.name} wants to play Simon Says!</p>
+    <p>Click <a href="${URL}/simon-says">here</a> to play!</p>
+    `;
+      break;
+
+    case EmailTemplates.ROCK_PAPER_SCISSORS:
+      emailContent += `<p>${pet.name} is ready to play Rock Paper Scissors!</p>
+    <p>Click <a href="${URL}/rock-paper-scissors">here</a> to play!</p>
+    `;
+      break;
+
+    case EmailTemplates.HIGHER_LOWER:
+      emailContent += `<p>${pet.name} is ready to play Higher or Lower!</p>
+    <p>Click <a href="${URL}/higher-lower">here</a> to play!</p>
     `;
       break;
   }
