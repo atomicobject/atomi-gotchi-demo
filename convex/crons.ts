@@ -28,4 +28,10 @@ crons.cron(
   internal.internalActions.playtimeEmail.playtimeEmail
 );
 
+crons.cron(
+  "Send pet bedtime emails (9pm EDT)",
+  "0 1 * * *",
+  internal.internalActions.bedtimeEmail.bedtimeEmail
+);
+
 export default crons;

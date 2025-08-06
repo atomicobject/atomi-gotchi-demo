@@ -8,6 +8,7 @@ export const enum EmailTemplates {
   SIMON_SAYS,
   HIGHER_LOWER,
   ROCK_PAPER_SCISSORS,
+  BEDTIME,
 }
 
 const getStatColor = (stat: number) => {
@@ -71,10 +72,17 @@ export const getEmailTemplate = (
     <p>Click <a href="${URL}/higher-lower">here</a> to play!</p>
     `;
       break;
+
+    case EmailTemplates.BEDTIME:
+      emailContent += `<p>${pet.name} has gone to sleep</p>
+    `;
+      break;
   }
 
+  const petGif = !EmailTemplates.BEDTIME ? pet.mood : "sleeping";
+
   emailContent += `
-    <img src="${GIF_FOLDER}/${pet.mood}.gif" alt="Virtual Pet" width="100" height="100">
+    <img src="${GIF_FOLDER}/${petGif}.gif" alt="Virtual Pet" width="100" height="100">
     <br> 
     ${getStatBar("❤️", pet.health)}
     ${getStatBar("🍪", pet.hunger)}

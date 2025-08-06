@@ -52,7 +52,7 @@ export const playtimeEmail = internalAction({
 
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
-        subject: `Atomi-Gotchi: It's time to play with your pet!`,
+        subject: `Atomi-Gotchi: 🎮 It's time to play with your pet!`,
         message: getEmailTemplate(gameType, updatedPet),
       });
     }
