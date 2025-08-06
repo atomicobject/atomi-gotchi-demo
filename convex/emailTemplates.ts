@@ -79,10 +79,10 @@ export const getEmailTemplate = (
       break;
   }
 
-  const petGif = template !== EmailTemplates.BEDTIME ? pet.mood : "sleeping";
+  const petGif = template !== EmailTemplates.BEDTIME ? pet.mood : "sleeping.gif";
 
   emailContent += `
-    <img src="${GIF_FOLDER}/${petGif}.gif" alt="Virtual Pet" width="100" height="100">
+    <img src="${GIF_FOLDER}/${petGif}" alt="Virtual Pet" width="100" height="100">
     <br> 
     ${getStatBar("❤️", pet.health)}
     ${getStatBar("🍪", pet.hunger)}
