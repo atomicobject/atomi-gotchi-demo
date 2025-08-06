@@ -3,12 +3,6 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.interval(
-  "Send pet playtime emails",
-  { minutes: 10 },
-  internal.internalActions.playtimeEmail.playtimeEmail
-);
-
 crons.cron(
   "Send pet hungry emails (9am EDT)",
   "0 13 * * *",
