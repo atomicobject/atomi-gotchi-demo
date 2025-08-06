@@ -16,7 +16,7 @@ import { useMutation } from "convex/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../convex/_generated/api";
-
+import { Panel } from "@/components/Panel";
 const choices = [
   { name: "rock", img: "/rps/rock1.png" },
   { name: "paper", img: "/rps/paper.png" },
@@ -164,6 +164,15 @@ export const RockPaperScissors = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
+      <Panel
+      sx={{
+        width: 600,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+      }}
+    >
       <Box sx={{ width: 400, mx: "auto", mb: 1 }}>
         <Box sx={{ mb: 1 }}>
           <Pet mood={petMood} />
@@ -208,10 +217,11 @@ export const RockPaperScissors = () => {
         </Box>
       </Box>
 
-      <h1>Rock Paper Scissors</h1>
+      
 
       {!gameStarted && (
         <>
+        <h1>Rock Paper Scissors</h1>
           <Button variant="contained" onClick={handlePlay} sx={{ mt: 2, mb: 2 }}>
             Play Game
           </Button>
@@ -220,7 +230,7 @@ export const RockPaperScissors = () => {
       )}
 
       {gameStarted && (
-        <Paper elevation={4} sx={{ maxWidth: 400, mx: "auto", mt: 3, p: 3, borderRadius: 3 }}>
+        <div>
           {round < 3 ? (
             <>
               <Typography variant="h6" sx={{ mb: 2 }}>
@@ -284,7 +294,7 @@ export const RockPaperScissors = () => {
           <Button variant="contained" onClick={handleClose} sx={{ mt: 2 }}>
             Close
           </Button>
-        </Paper>
+        </div>
       )}
       <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
         <DialogTitle>Game Over</DialogTitle>
@@ -302,6 +312,8 @@ export const RockPaperScissors = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      </Panel>
     </div>
+    
   );
 };
