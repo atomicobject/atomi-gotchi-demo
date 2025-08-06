@@ -43,9 +43,8 @@ export const getEmailTemplate = (
     case EmailTemplates.PET_CREATED:
       emailContent += `
       <h1>🎉 Welcome to Atomi-Gotchi! 🎉</h1>
-      <p>${pet.name} is super excited to meet you ❤️</p>
-      <p>Throughout the day, you'll get email notifications when ${pet.name} is hungry or wants to play.</p>
-      <p>In each email, you'll find a link to play a mini-game to help keep your pet happy and healthy.</p>
+      <p>${pet.name} is super excited to meet you</p>
+      <p>Throughout the day, you'll get email notifications when ${pet.name} is hungry or wants to play. In each email, you'll find a link to play a mini-game to help keep your pet happy and healthy.</p>
     `;
       break;
 
@@ -79,14 +78,27 @@ export const getEmailTemplate = (
       break;
   }
 
+  // Can't figure out why sometimes it ends in .gif and sometimes not
+  // Adding this workaround because I'm tired
   const petGif = template !== EmailTemplates.BEDTIME ? pet.mood : "sleeping.gif";
+  const petGifWithExtension = petGif.endsWith(".gif") ? petGif : petGif + ".gif";
 
   emailContent += `
-    <img src="${GIF_FOLDER}/${petGif}" alt="Virtual Pet" width="100" height="100">
-    <br> 
+    <img src="${GIF_FOLDER}/${petGifWithExtension}" alt="Virtual Pet" width="100" height="100">
     ${getStatBar("❤️", pet.health)}
     ${getStatBar("🍪", pet.hunger)}
+    <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
   `;
 
-  return emailContent;
+  return `
+  <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=3D"UTF-8">
+  </head>
+  <body style=3D"font-family:Arial,Helvetica,sans-serif;">
+    ${emailContent}
+  </body>
+</html>
+  `;
 };
