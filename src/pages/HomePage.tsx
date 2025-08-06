@@ -157,16 +157,10 @@ export const HomePage = () => {
               }}
             />
             <Stack direction="row" gap={1} sx={{ width: "100%", justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                onClick={handleSettings}
-              >
+              <Button variant="contained" onClick={handleSettings}>
                 Settings
               </Button>
-              <Button
-                variant="outlined"
-                onClick={handleSignOut}
-              >
+              <Button variant="outlined" onClick={handleSignOut}>
                 Sign Out
               </Button>
             </Stack>

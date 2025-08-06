@@ -1,13 +1,21 @@
-import { useState, useEffect } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
 import { BackToHome } from "@/components/BackToHome";
 import { Pet } from "@/components/Pet";
 import { PetMood } from "@/types/pet";
-import { Button, Paper, Stack, Typography, Box } from "@mui/material";
-import { set } from "react-hook-form";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useMutation } from "convex/react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../../convex/_generated/api";
 
 const choices = [
   { name: "rock", img: "/rps/rock1.png" },

@@ -3,7 +3,7 @@ import { api, internal } from "../_generated/api";
 import { internalAction } from "../_generated/server";
 import { EmailTemplates, getEmailTemplate } from "../emailTemplates";
 
-export const hungryEmail = internalAction({
+export const playTimeEmail = internalAction({
   args: {},
   returns: v.null(),
   handler: async (ctx) => {

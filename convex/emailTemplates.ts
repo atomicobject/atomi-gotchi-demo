@@ -1,5 +1,6 @@
 // TODO: Change this to be the main branch before merging
-const GIF_FOLDER = "https://raw.githubusercontent.com//atomicobject/atomi-gotchi-demo/main/public/gifs";
+const GIF_FOLDER =
+  "https://raw.githubusercontent.com/atomicobject/atomi-gotchi-demo/main/public/gifs";
 
 export const enum EmailTemplates {
   PET_CREATED,
@@ -14,7 +15,7 @@ const getStatColor = (stat: number) => {
 
 const getStatBar = (label: string, stat: number) => {
   const color = getStatColor(stat);
-  
+
   return `
     <div style="display: flex; align-items: center; margin: 15px 0; max-width: 300px;">
       <span style="margin-right: 10px; font-weight: bold; font-size: 14px;">${label}</span>
@@ -26,9 +27,11 @@ const getStatBar = (label: string, stat: number) => {
   `;
 };
 
+const URL = "http://localhost:5173"; //"https://atomigotchi.atomicobject.com";
+
 export const getEmailTemplate = (
   template: EmailTemplates,
-  pet: { name: string; health: number; hunger: number; mood: string }
+  pet: { _id?: string; name: string; health: number; hunger: number; mood: string }
 ) => {
   let emailContent = "";
 
@@ -44,7 +47,7 @@ export const getEmailTemplate = (
 
     case EmailTemplates.HUNGRY:
       emailContent += `<p>${pet.name} is feeling hungry!</p>
-    <p>Click <a href="https://atomigotchi.atomicobject.com/cooking">here</a> to feed your pet!</p>
+    <p>Click <a href="${URL}/cooking">here</a> to feed your pet!</p>
     `;
       break;
   }
