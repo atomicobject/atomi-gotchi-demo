@@ -152,15 +152,13 @@ export const HomePage = () => {
       localStorage.removeItem("currentPet");
       setPet(undefined);
       setUser(null);
-      setMessage({ type: "info", text: "Your account has been deleted." });
+      setMessage({ type: "success", text: "Your account has been deleted." });
       navigate("/login");
     } catch (error) {
       setMessage({ type: "error", text: "Failed to delete account. Please try again." });
     }
-      setMessage({ type: "error", text: "Failed to delete account. Please try again." });
-    }
   }
-  
+
   return (
     <AnimatedBackground animated={animatedBg}>
       <PanelCard
