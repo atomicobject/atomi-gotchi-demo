@@ -1,6 +1,8 @@
+import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { PanelCard } from "@/components/PanelCard";
 import { PetCreationForm } from "@/components/PetCreationForm";
 import { PetInfoCard } from "@/components/PetInfoCard";
+import { SettingsMenu } from "@/components/SettingsMenu";
 import { RequestMessage } from "@/types/login";
 import { mapPetMood, PetInfo } from "@/types/pet";
 import { Button, CircularProgress, Stack } from "@mui/material";
@@ -8,9 +10,6 @@ import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
-import { SettingsMenu } from "@/components/SettingsMenu";
-import { AnimatedBackground } from "@/components/AnimatedBackground";
-
 
 export const HomePage = () => {
   const [user, setUser] = useState<any>(null);
@@ -169,11 +168,16 @@ export const HomePage = () => {
 
   return (
     <AnimatedBackground animated={animatedBg}>
-      <PanelCard panelSx={{ height: 450, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
+      <PanelCard
+        panelSx={{
+          width: 450,
+        }}
+        message={message}
+      >
         {isLoadingPet ? (
           <CircularProgress />
         ) : pet ? (
-          <Stack gap={2} sx={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+          <Stack gap={2} sx={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
             <PetInfoCard
               petInfo={{
                 name: pet.name,
@@ -182,11 +186,11 @@ export const HomePage = () => {
                 mood: pet.mood,
               }}
             />
-            <Stack direction="row" gap={1} sx={{ width: '100%', justifyContent: 'center' }}>
-              <Button variant="contained" sx={{ fontSize: 13, px: 1.5, py: 0.75, minWidth: 70, height: 28 }} onClick={handleSettings}>
+            <Stack direction="row" gap={1} sx={{ width: "100%", justifyContent: "center" }}>
+              <Button variant="contained" onClick={handleSettings}>
                 Settings
               </Button>
-              <Button variant="outlined" sx={{ fontSize: 13, px: 1.5, py: 0.75, minWidth: 70, height: 28 }} onClick={handleSignOut}>
+              <Button variant="outlined" onClick={handleSignOut}>
                 Sign Out
               </Button>
             </Stack>

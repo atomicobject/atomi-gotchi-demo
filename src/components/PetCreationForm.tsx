@@ -169,8 +169,6 @@ export const PetCreationForm = (props: Props) => {
           </>
         ) : (
           <BackToHome onClick={() => window.dispatchEvent(new CustomEvent("pet-updated"))} />
-        
-        
         )}
       </Stack>
     </form>
