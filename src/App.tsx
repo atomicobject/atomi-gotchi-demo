@@ -103,8 +103,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        
-        <Route 
+
+        <Route
           path={ROUTES.rockPaperScissors}
           element={
             <ProtectedRoute>

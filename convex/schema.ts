@@ -5,6 +5,7 @@ export default defineSchema({
   users: defineTable({
     email: v.string(),
     password: v.string(),
+    emailEnabled: v.optional(v.boolean()),
   }).index("by_email", ["email"]),
 
   pets: defineTable({
@@ -13,9 +14,5 @@ export default defineSchema({
     health: v.number(),
     hunger: v.number(),
     mood: v.string(),
-    lastInteractionAt: v.string(),
-    pendingEmailAction: v.optional(v.string()),
-    emailSentAt: v.optional(v.string()),
-    lastEmail: v.optional(v.string())
   }).index("by_userId", ["userId"]),
 });

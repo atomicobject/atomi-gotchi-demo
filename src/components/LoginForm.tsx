@@ -67,10 +67,7 @@ export const LoginForm = (props: Props) => {
   };
 
   return (
-    <form
-      onSubmit={(e) => void handleSubmit(onSubmitForm)(e)}
-      style={{ width: "100%" }}
-    >
+    <form onSubmit={(e) => void handleSubmit(onSubmitForm)(e)} style={{ width: "100%" }}>
       <TextField
         label="Email"
         type="email"

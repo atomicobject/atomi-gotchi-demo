@@ -1,5 +1,14 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, Switch, Button, Stack } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControlLabel,
+  Switch,
+  Button,
+  Stack,
+} from "@mui/material";
 
 interface SettingsMenuProps {
   open: boolean;
@@ -24,17 +33,21 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
       <DialogContent>
         <Stack gap={2}>
           <FormControlLabel
-            control={<Switch checked={emailEnabled} onChange={e => onEmailToggle(e.target.checked)} />}
+            control={
+              <Switch checked={emailEnabled} onChange={(e) => onEmailToggle(e.target.checked)} />
+            }
             label="Enable Email Sending"
           />
           <FormControlLabel
-            control={<Switch checked={animatedBg} onChange={e => onBgToggle(e.target.checked)} />}
+            control={<Switch checked={animatedBg} onChange={(e) => onBgToggle(e.target.checked)} />}
             label="Animated Background"
           />
         </Stack>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} variant="contained" color="primary">Close</Button>
+        <Button onClick={onClose} variant="contained" color="primary">
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   );

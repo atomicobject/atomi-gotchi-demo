@@ -1,15 +1,22 @@
-import { useState, useEffect } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../../../convex/_generated/api";
 import { BackToHome } from "@/components/BackToHome";
 import { Pet } from "@/components/Pet";
 import { PetMood } from "@/types/pet";
-import { Button, Paper, Stack, Typography, Box } from "@mui/material";
-import { set } from "react-hook-form";
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useMutation } from "convex/react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { api } from "../../../convex/_generated/api";
+import { Panel } from "@/components/Panel";
 const choices = [
   { name: "rock", img: "/rps/rock1.png" },
   { name: "paper", img: "/rps/paper.png" },
@@ -61,11 +68,12 @@ export const RockPaperScissors = () => {
     void loadPet();
   }, [getPet]);
 
-  useEffect(() => { //dead pet modal
-  if (pet && pet.health === 0) {
-    setShowDeadModal(true);
-  }
-}, [pet]);
+  useEffect(() => {
+    //dead pet modal
+    if (pet && pet.health === 0) {
+      setShowDeadModal(true);
+    }
+  }, [pet]);
 
   const handlePlay = () => {
     setPlayerChoice(null);
@@ -94,17 +102,16 @@ export const RockPaperScissors = () => {
     });
 
     //update mood per turn
-    if(res === "Won") {
-        setPetMood(PetMood.HAPPY);
-    } else if(res === "Lost") {
-        setPetMood(PetMood.SAD);
+    if (res === "Won") {
+      setPetMood(PetMood.HAPPY);
+    } else if (res === "Lost") {
+      setPetMood(PetMood.SAD);
     } else {
-        setPetMood(PetMood.NEUTRAL);
+      setPetMood(PetMood.NEUTRAL);
     }
     setRound((prev) => prev + 1);
   };
 
- 
   const handleFinalResults = async (results: string[]) => {
     const won = results.filter((r) => r === "Won").length;
     const lost = results.filter((r) => r === "Lost").length;
@@ -157,7 +164,15 @@ export const RockPaperScissors = () => {
 
   return (
     <div style={{ textAlign: "center" }}>
-        
+      <Panel
+      sx={{
+        width: 600,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+      }}
+    >
       <Box sx={{ width: 400, mx: "auto", mb: 1 }}>
         <Box sx={{ mb: 1 }}>
           <Pet mood={petMood} />
@@ -202,10 +217,11 @@ export const RockPaperScissors = () => {
         </Box>
       </Box>
 
-      <h1>Rock Paper Scissors</h1>
+      
 
       {!gameStarted && (
         <>
+        <h1>Rock Paper Scissors</h1>
           <Button variant="contained" onClick={handlePlay} sx={{ mt: 2, mb: 2 }}>
             Play Game
           </Button>
@@ -214,7 +230,7 @@ export const RockPaperScissors = () => {
       )}
 
       {gameStarted && (
-        <Paper elevation={4} sx={{ maxWidth: 400, mx: "auto", mt: 3, p: 3, borderRadius: 3 }}>
+        <div>
           {round < 3 ? (
             <>
               <Typography variant="h6" sx={{ mb: 2 }}>
@@ -278,25 +294,26 @@ export const RockPaperScissors = () => {
           <Button variant="contained" onClick={handleClose} sx={{ mt: 2 }}>
             Close
           </Button>
-        </Paper>
+        </div>
       )}
       <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
-  <DialogTitle>Game Over</DialogTitle>
-  <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
-  <DialogActions>
-    <Button
-      onClick={() => {
-        localStorage.removeItem("currentPet");
-        setShowDeadModal(false);
-        navigate("/");
-      }}
-      autoFocus
-    >
-      Create New Pet
-    </Button>
-  </DialogActions>
-</Dialog>
-
+        <DialogTitle>Game Over</DialogTitle>
+        <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              localStorage.removeItem("currentPet");
+              setShowDeadModal(false);
+              navigate("/");
+            }}
+            autoFocus
+          >
+            Create New Pet
+          </Button>
+        </DialogActions>
+      </Dialog>
+      </Panel>
     </div>
+    
   );
 };

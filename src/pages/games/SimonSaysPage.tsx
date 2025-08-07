@@ -140,6 +140,29 @@ export const SimonSaysPage = () => {
         </DialogActions>
       </Dialog>
       <Panel
+    <Panel
+      sx={{
+        width: 600,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 2,
+      }}
+    >
+      <Stack direction="row" alignItems="center" sx={{ width: "100%", position: "relative" }}>
+        <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+          <Pet mood={petMood} />
+        </Box>
+        <Box
+          sx={{
+            position: "absolute",
+            right: 150,
+          }}
+        >
+          <Typography variant="h4">{displayedSquare || "\u00A0"}</Typography>
+        </Box>
+      </Stack>
+      <Box
         sx={{
           width: 600,
           display: "flex",
