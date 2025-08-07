@@ -137,7 +137,7 @@ export const HomePage = () => {
 
   return (
     <AnimatedBackground animated={animatedBg}>
-      <PanelCard panelSx={{ height: 500, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
+      <PanelCard panelSx={{ height: 450, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
         {isLoadingPet ? (
           <CircularProgress />
         ) : pet ? (
@@ -156,37 +156,6 @@ export const HomePage = () => {
               </Button>
               <Button variant="outlined" sx={{ fontSize: 13, px: 1.5, py: 0.75, minWidth: 70, height: 28 }} onClick={handleSignOut}>
                 Sign Out
-              </Button>
-            </Stack>
-            {/* Mini Game Buttons */}
-            <Stack direction="row" gap={2} mt={2} sx={{ flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
-              <Button
-                variant="contained"
-                sx={{ background: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 10, px: 0.5, py: 0.25, boxShadow: 2, whiteSpace: 'nowrap', minWidth: 120, maxWidth: 120, width: '45%', height: 28 }}
-                onClick={() => navigate("/cooking")}
-              >
-                Cooking
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ background: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 10, px: 0.5, py: 0.25, boxShadow: 2, whiteSpace: 'nowrap', minWidth: 120, maxWidth: 120, width: '45%', height: 28 }}
-                onClick={() => navigate("/rock-paper-scissors")}
-              >
-                Rock Paper Scissors
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ background: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 10, px: 0.5, py: 0.25, boxShadow: 2, whiteSpace: 'nowrap', minWidth: 120, maxWidth: 120, width: '45%', height: 28 }}
-                onClick={() => navigate("/higher-lower")}
-              >
-                Higher/Lower
-              </Button>
-              <Button
-                variant="contained"
-                sx={{ background: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 10, px: 0.5, py: 0.25, boxShadow: 2, whiteSpace: 'nowrap', minWidth: 120, maxWidth: 120, width: '45%', height: 28 }}
-                onClick={() => navigate("/simon-says")}
-              >
-                Simon Says
               </Button>
             </Stack>
           </Stack>
