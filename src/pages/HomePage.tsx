@@ -15,6 +15,9 @@ export const HomePage = () => {
   const [user, setUser] = useState<any>(null);
 
   const [pet, setPet] = useState<PetInfo | undefined>(undefined);
+
+  const [petName, setPetName] = useState<string>("");
+
   const [isLoadingPet, setIsLoadingPet] = useState(false);
 
   const [message, setMessage] = useState<RequestMessage | undefined>(undefined);
@@ -32,6 +35,10 @@ export const HomePage = () => {
   const navigate = useNavigate();
 
   const getPetMutation = useMutation(api.mutations.getPet.getPet);
+
+  const renamePetMutation = useMutation(api.mutations.renamePet.renamePet);
+
+  const deleteAccountMutation = useMutation(api.mutations.deleteAccount.deleteAccount);
 
   const deriveMoodFromHealth = (health: number) => {
     if (health < 33) return "sad";
@@ -59,7 +66,7 @@ export const HomePage = () => {
     };
 
     setPet(petWithMood);
-    if (petWithMood.health === 0) {
+    if (petWithMood.health === 0 || petWithMood.hunger === 0) {
       setPet(undefined);
       setMessage({ type: "info", text: "Your pet has died. Create a new one to continue." });
     }
@@ -128,6 +135,32 @@ export const HomePage = () => {
     setMessage(message);
   };
 
+  const handleRenamePet = async (newName: string) => {
+    setPetName(newName);
+    if (user?.email) {
+      await renamePetMutation({ email: user.email, newName });
+      // Optionally reload pet info after renaming
+      void loadPet();
+    }
+  };
+
+  async function handleDeleteAccount(): Promise<void> {
+    if (!user?.email) return;
+    try {
+      await deleteAccountMutation({ email: user.email });
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("currentPet");
+      setPet(undefined);
+      setUser(null);
+      setMessage({ type: "info", text: "Your account has been deleted." });
+      navigate("/login");
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to delete account. Please try again." });
+    }
+      setMessage({ type: "error", text: "Failed to delete account. Please try again." });
+    }
+  }
+  
   return (
     <AnimatedBackground animated={animatedBg}>
       <PanelCard panelSx={{ height: 450, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
@@ -193,6 +226,9 @@ export const HomePage = () => {
           onEmailToggle={handleEmailToggle}
           animatedBg={animatedBg}
           onBgToggle={handleBgToggle}
+          petName={pet?.name ?? ""}
+          onRenamePet={handleRenamePet}
+          onDeleteAccount={handleDeleteAccount}
         />
       </PanelCard>
     </AnimatedBackground>
