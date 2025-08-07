@@ -168,7 +168,9 @@ export const PetCreationForm = (props: Props) => {
             </Button>
           </>
         ) : (
-          <BackToHome onClick={() => window.location.reload()} />
+          <BackToHome onClick={() => window.dispatchEvent(new CustomEvent("pet-updated"))} />
+        
+        
         )}
       </Stack>
     </form>
