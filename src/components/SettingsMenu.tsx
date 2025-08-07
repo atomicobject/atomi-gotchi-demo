@@ -1,5 +1,14 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, FormControlLabel, Switch, Button, Stack } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  FormControlLabel,
+  Switch,
+  Button,
+  Stack,
+} from "@mui/material";
 
 interface SettingsMenuProps {
   open: boolean;

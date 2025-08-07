@@ -7,6 +7,7 @@ import { useAction, useMutation } from "convex/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { api } from "../../convex/_generated/api";
+import { EmailTemplates, getEmailTemplate } from "../../convex/emailTemplates";
 
 interface PetCreationFormData {
   petName: string;
@@ -26,12 +27,11 @@ export const PetCreationForm = (props: Props) => {
   const createPetMutation = useMutation(api.mutations.createPet.createPet);
   const sendEmailAction = useAction(api.sendEmail.sendEmail);
 
-  const { register, handleSubmit, watch, setValue } =
-    useForm<PetCreationFormData>({
-      defaultValues: {
-        petName: "",
-      },
-    });
+  const { register, handleSubmit, watch, setValue } = useForm<PetCreationFormData>({
+    defaultValues: {
+      petName: "",
+    },
+  });
 
   const petName = watch("petName");
   const isFormValid = petName.trim() !== "";
@@ -41,8 +41,19 @@ export const PetCreationForm = (props: Props) => {
       return;
     }
 
+    console.log(props.user?.email);
+
     try {
-      const result = await sendEmailAction({ email: props.user?.email });
+      const result = await sendEmailAction({
+        email: props.user?.email,
+        subject: "Atomi-Gotchi: Your pet has been created!",
+        message: getEmailTemplate(EmailTemplates.PET_CREATED, {
+          name: petName,
+          health: 100,
+          hunger: 100,
+          mood: PetMood.HAPPY,
+        }),
+      });
 
       if (result?.success) {
         props.onSubmitPetForm({
@@ -96,10 +107,7 @@ export const PetCreationForm = (props: Props) => {
   };
 
   return (
-    <form
-      onSubmit={(e) => void handleSubmit(onSubmitForm)(e)}
-      style={{ width: "100%" }}
-    >
+    <form onSubmit={(e) => void handleSubmit(onSubmitForm)(e)} style={{ width: "100%" }}>
       <Stack width="100%" alignItems="center" gap={2}>
         {props.notice && (
           <Box
@@ -143,12 +151,7 @@ export const PetCreationForm = (props: Props) => {
                   }}
                 />
               </Box>
-              <Box
-                flex={0.1}
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-              >
+              <Box flex={0.1} display="flex" justifyContent="center" alignItems="center">
                 <Button
                   variant="outlined"
                   onClick={() => {
@@ -160,11 +163,7 @@ export const PetCreationForm = (props: Props) => {
                 </Button>
               </Box>
             </Stack>
-            <Button
-              variant="contained"
-              disabled={!isFormValid || loading}
-              type="submit"
-            >
+            <Button variant="contained" disabled={!isFormValid || loading} type="submit">
               {loading ? "Creating your pet..." : "Create"}
             </Button>
           </>

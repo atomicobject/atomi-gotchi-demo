@@ -52,10 +52,7 @@ export const getPet = mutation({
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Error checking for existing pets",
+        error: error instanceof Error ? error.message : "Error checking for existing pets",
       };
     }
   },

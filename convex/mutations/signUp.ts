@@ -31,6 +31,7 @@ export const signUp = mutation({
       const userId = await ctx.db.insert("users", {
         email: args.email,
         password: args.password,
+        emailEnabled: true,
       });
 
       return {
@@ -40,8 +41,7 @@ export const signUp = mutation({
     } catch (error) {
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
+        error: error instanceof Error ? error.message : "Unknown error occurred",
       };
     }
   },
