@@ -58,7 +58,7 @@ export const HigherLowerPage = () => {
 const [pet, setPet] = useState<any | null>(null);
 const currentUserRaw = localStorage.getItem("currentUser");
 const user = currentUserRaw ? JSON.parse(currentUserRaw) : null;
-const petQuery = useQuery(
+const getPet = useQuery(
   api.mutations.getPet.getPet,
   user?.email ? { email: user.email } : "skip"
 );
@@ -69,23 +69,22 @@ const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    const loadPet = async () => {
+    const loadPet = () => {
       const currentUserRaw = localStorage.getItem("currentUser");
       if (!currentUserRaw) return;
       try {
         const user = JSON.parse(currentUserRaw);
         if (!user?.email) return;
-        const res = await getPet({ email: user.email });
-        if (res.success && res.pet) {
-          setPet(res.pet);
-          setPetMood(deriveMoodFromHealth(res.pet.health));
-          localStorage.setItem("currentPet", JSON.stringify(res.pet));
+        if (getPet && getPet.success && getPet.pet) {
+          setPet(getPet.pet);
+          setPetMood(deriveMoodFromHealth(getPet.pet.health));
+          localStorage.setItem("currentPet", JSON.stringify(getPet.pet));
         }
       } catch {
         // ignore parse errors
       }
     };
-    void loadPet();
+    loadPet();
   }, [getPet]);
 
   useEffect(() => {
@@ -256,7 +255,7 @@ const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
 
       {pet ? (
         <Box sx={{ width: "100%", mb: 1 }}>
-          <Typography vafriant="subtitle1" sx={{ mb: 0.5 }}>
+          <Typography variant="subtitle1" sx={{ mb: 0.5 }}>
             ❤️ Health:
           </Typography>
           <Box
