@@ -167,7 +167,7 @@ export const SimonSaysPage = () => {
             {/* Health bar with percentage */}
             <Box sx={{ width: 200, mt: 1, position: 'relative' }}>
               <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                Health:
+              ❤️ Health:
               </Typography>
               <Box
                 sx={{
