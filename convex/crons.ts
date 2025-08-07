@@ -2,6 +2,11 @@ import { cronJobs } from "convex/server";
 import { internal } from "./_generated/api";
 
 const crons = cronJobs();
+//crons.interval(
+//   "Send pet playtime emails",
+//   { minutes: 1 },
+//   internal.internalActions.playtimeEmail.playtimeEmail
+//);
 
 crons.cron(
   "Send pet hungry emails (9am EDT)",
