@@ -11,6 +11,7 @@ import { api } from "../../convex/_generated/api";
 import { SettingsMenu } from "@/components/SettingsMenu";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 
+
 export const HomePage = () => {
   const [user, setUser] = useState<any>(null);
 
@@ -32,6 +33,7 @@ export const HomePage = () => {
   const navigate = useNavigate();
 
   const getPetMutation = useMutation(api.mutations.getPet.getPet);
+  const deletePetMutation = useMutation(api.mutations.deletePet.deletePet);
 
   const deriveMoodFromHealth = (health: number) => {
     if (health < 33) return "sad";
@@ -58,11 +60,16 @@ export const HomePage = () => {
       mood: mapPetMood(derivedMood), // or just use derivedMood if PetInfoCard accepts that
     };
 
-    setPet(petWithMood);
     if (petWithMood.health === 0) {
+      await deletePetMutation({ petId: petWithMood.id });
       setPet(undefined);
       setMessage({ type: "info", text: "Your pet has died. Create a new one to continue." });
+      localStorage.removeItem("currentPet");
+      setIsLoadingPet(false);
+      return;
     }
+
+    setPet(petWithMood);
     localStorage.setItem("currentPet", JSON.stringify(petWithMood));
     setIsLoadingPet(false);
   }, [user, getPetMutation]);
@@ -130,7 +137,7 @@ export const HomePage = () => {
 
   return (
     <AnimatedBackground animated={animatedBg}>
-      <PanelCard panelSx={{ height: 450, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
+      <PanelCard panelSx={{ height: 550, width: 600, maxWidth: '95vw', mx: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 3, background: 'white', borderRadius: 4 }} message={message}>
         {isLoadingPet ? (
           <CircularProgress />
         ) : pet ? (

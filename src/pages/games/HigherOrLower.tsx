@@ -97,7 +97,7 @@ setPetMood(correct ? PetMood.EXCITED : PetMood.SAD);
 
 if (pet) {
     try {
-    const delta = correct ? 10 : -5;
+    const delta = correct ? 10 : -1090;
     const result = await updateHealth({ petId: pet.id, delta });
     console.log("updateHealth result:", result);
     window.dispatchEvent(new CustomEvent("pet-updated"));
