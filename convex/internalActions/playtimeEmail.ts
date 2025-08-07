@@ -49,7 +49,7 @@ export const playtimeEmail = internalAction({
             return EmailTemplates.ROCK_PAPER_SCISSORS;
         }
       })();
-      await sleep(1000); 
+      await sleep(1000);
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
         subject: `Atomi-Gotchi: 🎮 It's time to play with your pet!`,
@@ -61,7 +61,6 @@ export const playtimeEmail = internalAction({
   },
 });
 
-
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

@@ -3,7 +3,16 @@ import { BackToHome } from "@/components/BackToHome";
 import { Panel } from "@/components/Panel";
 import { Pet } from "@/components/Pet";
 import { PetMood, ANIMATION_TIME } from "@/types/pet";
-import { Box, Stack, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import {
+  Box,
+  Stack,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -59,8 +68,7 @@ export const SimonSaysPage = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [petMood, setPetMood] = useState<PetMood>(PetMood.HAPPY);
 
-  const addSquare = () =>
-    setSequence((seq) => [...seq, Math.floor(Math.random() * 4) + 1]);
+  const addSquare = () => setSequence((seq) => [...seq, Math.floor(Math.random() * 4) + 1]);
 
   const replay = () => {
     setCanClick(false);
@@ -130,11 +138,14 @@ export const SimonSaysPage = () => {
         <DialogTitle>Game Over</DialogTitle>
         <DialogContent>Your pet has died. Create a new one to continue.</DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            localStorage.removeItem("currentPet");
-            setShowDeadModal(false);
-            navigate("/home");
-          }} autoFocus>
+          <Button
+            onClick={() => {
+              localStorage.removeItem("currentPet");
+              setShowDeadModal(false);
+              navigate("/home");
+            }}
+            autoFocus
+          >
             Create New Pet
           </Button>
         </DialogActions>
@@ -149,11 +160,7 @@ export const SimonSaysPage = () => {
         }}
       >
         {/* Top row: Pet, health bar, flash */}
-        <Stack
-          direction="row"
-          alignItems="center"
-          sx={{ width: "100%", position: "relative" }}
-        >
+        <Stack direction="row" alignItems="center" sx={{ width: "100%", position: "relative" }}>
           <Box
             sx={{
               flex: 1,
@@ -165,9 +172,9 @@ export const SimonSaysPage = () => {
             <Pet mood={petMood} />
 
             {/* Health bar with percentage */}
-            <Box sx={{ width: 200, mt: 1, position: 'relative' }}>
+            <Box sx={{ width: 200, mt: 1, position: "relative" }}>
               <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-              ❤️ Health:
+                ❤️ Health:
               </Typography>
               <Box
                 sx={{
@@ -190,13 +197,13 @@ export const SimonSaysPage = () => {
                 <Typography
                   variant="caption"
                   sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     top: 0,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    lineHeight: '16px',
-                    fontWeight: 'bold',
-                    userSelect: 'none'
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    lineHeight: "16px",
+                    fontWeight: "bold",
+                    userSelect: "none",
                   }}
                 >{`${health}%`}</Typography>
               </Box>
@@ -204,9 +211,7 @@ export const SimonSaysPage = () => {
           </Box>
 
           <Box sx={{ position: "absolute", right: 150 }}>
-            <Typography variant="h4">
-              {displayedSquare || "\u00A0"}
-            </Typography>
+            <Typography variant="h4">{displayedSquare || "\u00A0"}</Typography>
           </Box>
         </Stack>
 
