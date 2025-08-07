@@ -4,7 +4,7 @@ import { PetInfoCard } from "@/components/PetInfoCard";
 import { RequestMessage } from "@/types/login";
 import { mapPetMood, PetInfo } from "@/types/pet";
 import { Button, CircularProgress, Stack } from "@mui/material";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
@@ -35,7 +35,7 @@ export const HomePage = () => {
 
   const navigate = useNavigate();
 
-  const getPetMutation = useMutation(api.mutations.getPet.getPet);
+  const petQuery = useQuery(api.mutations.getPet.getPet, user?.email ? { email: user.email } : "skip");
   const deletePetMutation = useMutation(api.mutations.deletePet.deletePet);
 
   const renamePetMutation = useMutation(api.mutations.renamePet.renamePet);
@@ -53,7 +53,8 @@ export const HomePage = () => {
     if (!user?.email) return;
 
     setIsLoadingPet(true);
-    const result = await getPetMutation({ email: user.email });
+
+    const result = petQuery;
     console.log("getPet response on HomePage:", result);
     if (!result?.pet) {
       setIsLoadingPet(false);
@@ -79,7 +80,7 @@ export const HomePage = () => {
     setPet(petWithMood);
     localStorage.setItem("currentPet", JSON.stringify(petWithMood));
     setIsLoadingPet(false);
-  }, [user, getPetMutation]);
+  }, [user, petQuery]);
 
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");

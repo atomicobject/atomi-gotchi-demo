@@ -12,7 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../convex/_generated/api";
@@ -38,7 +38,12 @@ function getResult(player: string, opponent: string): string {
 
 export const RockPaperScissors = () => {
   const [pet, setPet] = useState<any | null>(null);
-  const getPet = useMutation(api.mutations.getPet.getPet);
+  const currentUserRaw = typeof window !== "undefined" ? localStorage.getItem("currentUser") : null;
+  const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+  const getPet = useQuery(
+    api.mutations.getPet.getPet,
+    currentUser?.email ? { email: currentUser.email } : "skip"
+  );
   const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
   const [showDeadModal, setShowDeadModal] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -52,20 +57,11 @@ export const RockPaperScissors = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loadPet = async () => {
-      const currentUserRaw = localStorage.getItem("currentUser");
-      if (!currentUserRaw) return;
-      try {
-        const user = JSON.parse(currentUserRaw);
-        if (!user?.email) return;
-        const res = await getPet({ email: user.email });
-        if (res.success && res.pet) {
-          setPet(res.pet);
-          localStorage.setItem("currentPet", JSON.stringify(res.pet));
-        }
-      } catch {}
-    };
-    void loadPet();
+    if (!getPet) return;
+    if (getPet.success && getPet.pet) {
+      setPet(getPet.pet);
+      localStorage.setItem("currentPet", JSON.stringify(getPet.pet));
+    }
   }, [getPet]);
 
   useEffect(() => {

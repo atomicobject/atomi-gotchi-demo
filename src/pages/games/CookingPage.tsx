@@ -5,7 +5,7 @@ import { Panel } from "@/components/Panel";
 import { Button, Stack, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Confetti from "react-confetti";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api.js";
 import { Pet } from "@/components/Pet";
 import { PetMood } from "@/types/pet";
@@ -84,6 +84,9 @@ export function CookingPage() {
   const [showDeadModal, setShowDeadModal] = useState(false);
   const navigate = useNavigate();
   const updateHunger = useMutation(api.mutations.updateHunger.updateHunger);
+  const currentUser = localStorage.getItem("currentUser");
+  const currentUserEmail = currentUser ? JSON.parse(currentUser).email : "";
+  const convexPet = useQuery(api.mutations.getPet.getPet, {email: currentUserEmail});
 
   // Get current pet from localStorage
   const currentPet = localStorage.getItem("currentPet");
@@ -182,10 +185,10 @@ export function CookingPage() {
 
   // Show dead modal if pet.hunger === 0
   useEffect(() => {
-    if (pet && pet.hunger === 0) {
+    if (convexPet && convexPet.pet && convexPet.pet.hunger === 0) {
       setShowDeadModal(true);
     }
-  }, [pet]);
+  }, [convexPet]);
 
   useEffect(() => {
     return () => {

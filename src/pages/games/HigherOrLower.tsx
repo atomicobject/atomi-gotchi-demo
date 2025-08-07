@@ -5,7 +5,7 @@ import { Pet } from "@/components/Pet";
 import { PetMood, ANIMATION_TIME } from "@/types/pet";
 import { Box, Button, Stack, Typography, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 
@@ -45,7 +45,12 @@ open: false,
 });
 
 const [pet, setPet] = useState<any | null>(null);
-const getPet = useMutation(api.mutations.getPet.getPet);
+const currentUserRaw = localStorage.getItem("currentUser");
+const user = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+const petQuery = useQuery(
+  api.mutations.getPet.getPet,
+  user?.email ? { email: user.email } : "skip"
+);
 const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
 
 const navigate = useNavigate();
@@ -53,24 +58,13 @@ const [showDeadModal, setShowDeadModal] = useState(false);
 const [started, setStarted] = useState(false);
 
 useEffect(() => {
-const loadPet = async () => {
-    const currentUserRaw = localStorage.getItem("currentUser");
-    if (!currentUserRaw) return;
-    try {
-    const user = JSON.parse(currentUserRaw);
-    if (!user?.email) return;
-    const res = await getPet({ email: user.email });
-    if (res.success && res.pet) {
-        setPet(res.pet);
-        setPetMood(deriveMoodFromHealth(res.pet.health));
-        localStorage.setItem("currentPet", JSON.stringify(res.pet));
-    }
-    } catch {
-    // ignore parse errors
-    }
-};
-void loadPet();
-}, [getPet]);
+  if (petQuery && petQuery.success && petQuery.pet) {
+    setPet(petQuery.pet);
+    setPetMood(deriveMoodFromHealth(petQuery.pet.health));
+    localStorage.setItem("currentPet", JSON.stringify(petQuery.pet));
+  }
+  // No async/await needed, useQuery is synchronous
+}, [petQuery]);
 
 useEffect(() => {
   if (pet && pet.health === 0) {
@@ -232,7 +226,7 @@ return (
 
     {pet ? (
     <Box sx={{ width: "100%", mb: 1 }}>
-        <Typography vafriant="subtitle1" sx={{ mb: 0.5 }}>
+        <Typography variant="subtitle1" sx={{ mb: 0.5 }}>
         ❤️ Health:
         </Typography>
         <Box
