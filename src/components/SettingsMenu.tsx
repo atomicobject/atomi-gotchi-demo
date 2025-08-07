@@ -138,7 +138,7 @@ export const SettingsMenu: React.FC<SettingsMenuProps> = ({
       <Dialog open={deleteDialogOpen} onClose={handleDeleteDialogClose}>
         <DialogTitle>Delete Account</DialogTitle>
         <DialogContent>
-          Are you sure you want to delete your account? This action cannot be undone.
+          Are you sure you want to delete your account? This action cannot be undone, and your pet will die.
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteDialogClose} variant="outlined" color="primary">Cancel</Button>
