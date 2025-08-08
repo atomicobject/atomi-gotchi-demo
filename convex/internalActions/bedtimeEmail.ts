@@ -22,7 +22,7 @@ export const bedtimeEmail = internalAction({
         continue;
       }
 
-      await sleep(1000);
+      await sleep(2000);
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
         subject: `Atomi-Gotchi: 💤 Your pet is going to bed`,
