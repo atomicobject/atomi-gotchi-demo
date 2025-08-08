@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { BackToHome } from "@/components/BackToHome";
 import { Panel } from "@/components/Panel";
-import { Button, Stack, Typography, Box } from "@mui/material";
+import { Button, Stack, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Confetti from "react-confetti";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api.js";
 import { Pet } from "@/components/Pet";
 import { PetMood } from "@/types/pet";
@@ -65,8 +65,7 @@ const combinations: Record<string, Treat> = {
   cherrypineapple: {
     key: "cherrypineapple",
     name: "Cherry Pineapple Candy",
-    img: "/food/redyellow.png",
-  },
+    img: "/food/redyellow.png" },
 };
 
 export function CookingPage() {
@@ -82,8 +81,12 @@ export function CookingPage() {
   const [hungerBar, setHungerBar] = useState<number>(0);
   const [fruitsVisible, setFruitsVisible] = useState(true);
   const [isTempMood, setIsTempMood] = useState(false);
+  const [showDeadModal, setShowDeadModal] = useState(false);
   const navigate = useNavigate();
   const updateHunger = useMutation(api.mutations.updateHunger.updateHunger);
+  const currentUser = localStorage.getItem("currentUser");
+  const currentUserEmail = currentUser ? JSON.parse(currentUser).email : "";
+  const convexPet = useQuery(api.mutations.getPet.getPet, {email: currentUserEmail});
 
   // Get current pet from localStorage
   const currentPet = localStorage.getItem("currentPet");
@@ -180,6 +183,13 @@ export function CookingPage() {
     setFruitsVisible(true);
   };
 
+  // Show dead modal if pet.hunger === 0
+  useEffect(() => {
+    if (convexPet && convexPet.pet && convexPet.pet.hunger === 0) {
+      setShowDeadModal(true);
+    }
+  }, [convexPet]);
+
   useEffect(() => {
     return () => {
       if (moodTimeout) clearTimeout(moodTimeout);
@@ -204,6 +214,30 @@ export function CookingPage() {
           position: "relative",
         }}
       >
+        {/* Dead pet modal (single, correct version) */}
+        <Dialog open={showDeadModal} onClose={() => {}} disableEscapeKeyDown>
+          <DialogTitle>Game Over</DialogTitle>
+          <DialogContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <img src="/gifs/dead.png" alt="Dead Pet" style={{ width: 120, height: 120 }} />
+            <Typography variant="h6" color="error" align="center">
+              Your pet has died from hunger.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                localStorage.removeItem("currentPet");
+                setShowDeadModal(false);
+                navigate("/");
+              }}
+              autoFocus
+              variant="contained"
+              color="error"
+            >
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
         {/* Pet display row, only after game has started */}
         {started && (
           <Stack

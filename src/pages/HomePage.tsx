@@ -6,8 +6,8 @@ import { SettingsMenu } from "@/components/SettingsMenu";
 import { RequestMessage } from "@/types/login";
 import { mapPetMood, PetInfo } from "@/types/pet";
 import { Button, CircularProgress, Stack } from "@mui/material";
-import { useMutation } from "convex/react";
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 
@@ -15,6 +15,9 @@ export const HomePage = () => {
   const [user, setUser] = useState<any>(null);
 
   const [pet, setPet] = useState<PetInfo | undefined>(undefined);
+
+  const [petName, setPetName] = useState<string>("");
+
   const [isLoadingPet, setIsLoadingPet] = useState(false);
 
   const [message, setMessage] = useState<RequestMessage | undefined>(undefined);
@@ -31,8 +34,12 @@ export const HomePage = () => {
 
   const navigate = useNavigate();
 
-  const getPetMutation = useMutation(api.mutations.getPet.getPet);
+  const petQuery = useQuery(api.mutations.getPet.getPet, user?.email ? { email: user.email } : "skip");
   const deletePetMutation = useMutation(api.mutations.deletePet.deletePet);
+
+  const renamePetMutation = useMutation(api.mutations.renamePet.renamePet);
+
+  const deleteAccountMutation = useMutation(api.mutations.deleteAccount.deleteAccount);
 
   const deriveMoodFromHealth = (health: number) => {
     if (health < 33) return "sad";
@@ -45,7 +52,8 @@ export const HomePage = () => {
     if (!user?.email) return;
 
     setIsLoadingPet(true);
-    const result = await getPetMutation({ email: user.email });
+
+    const result = petQuery;
     console.log("getPet response on HomePage:", result);
     if (!result?.pet) {
       setIsLoadingPet(false);
@@ -59,7 +67,7 @@ export const HomePage = () => {
       mood: mapPetMood(derivedMood), // or just use derivedMood if PetInfoCard accepts that
     };
 
-    if (petWithMood.health === 0) {
+    if (petWithMood.health === 0 || petWithMood.hunger === 0) {
       await deletePetMutation({ petId: petWithMood.id });
       setPet(undefined);
       setMessage({ type: "info", text: "Your pet has died. Create a new one to continue." });
@@ -71,7 +79,7 @@ export const HomePage = () => {
     setPet(petWithMood);
     localStorage.setItem("currentPet", JSON.stringify(petWithMood));
     setIsLoadingPet(false);
-  }, [user, getPetMutation]);
+  }, [user, petQuery]);
 
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
@@ -134,6 +142,30 @@ export const HomePage = () => {
     setMessage(message);
   };
 
+  const handleRenamePet = async (newName: string) => {
+    setPetName(newName);
+    if (user?.email) {
+      await renamePetMutation({ email: user.email, newName });
+      // Optionally reload pet info after renaming
+      void loadPet();
+    }
+  };
+
+  async function handleDeleteAccount(): Promise<void> {
+    if (!user?.email) return;
+    try {
+      await deleteAccountMutation({ email: user.email });
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("currentPet");
+      setPet(undefined);
+      setUser(null);
+      setMessage({ type: "success", text: "Your account has been deleted." });
+      navigate("/login");
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to delete account. Please try again." });
+    }
+  }
+
   return (
     <AnimatedBackground animated={animatedBg}>
       <PanelCard
@@ -173,6 +205,9 @@ export const HomePage = () => {
           onEmailToggle={handleEmailToggle}
           animatedBg={animatedBg}
           onBgToggle={handleBgToggle}
+          petName={pet?.name ?? ""}
+          onRenamePet={handleRenamePet}
+          onDeleteAccount={handleDeleteAccount}
         />
       </PanelCard>
     </AnimatedBackground>

@@ -1,7 +1,7 @@
 import { v } from "convex/values";
-import { mutation } from "../_generated/server";
+import { query } from "../_generated/server";
 
-export const getPet = mutation({
+export const getPet = query ({
   args: {
     email: v.string(),
   },

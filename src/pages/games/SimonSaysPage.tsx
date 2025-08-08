@@ -14,7 +14,7 @@ import {
   Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 
@@ -29,22 +29,19 @@ const NUM_ROUNDS = 6;
 export const SimonSaysPage = () => {
   // --- Pet & health setup ---
   const [pet, setPet] = useState<any | null>(null);
-  const getPet = useMutation(api.mutations.getPet.getPet);
+  const currentUserRaw = typeof window !== "undefined" ? localStorage.getItem("currentUser") : null;
+  const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+  const petQuery = useQuery(
+    api.mutations.getPet.getPet,
+    currentUser?.email ? { email: currentUser.email } : "skip"
+  );
   const updateHealth = useMutation(api.mutations.updateHealth.updateHealth);
 
   useEffect(() => {
-    const loadPet = async () => {
-      const raw = localStorage.getItem("currentUser");
-      if (!raw) return;
-      try {
-        const user = JSON.parse(raw);
-        if (!user?.email) return;
-        const res = await getPet({ email: user.email });
-        if (res.success && res.pet) setPet(res.pet);
-      } catch {}
-    };
-    void loadPet();
-  }, [getPet]);
+    if (petQuery && petQuery.success && petQuery.pet) {
+      setPet(petQuery.pet);
+    }
+  }, [petQuery]);
 
   const navigate = useNavigate();
   const [showDeadModal, setShowDeadModal] = useState(false);
