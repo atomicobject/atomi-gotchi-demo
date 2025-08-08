@@ -132,7 +132,7 @@ export const RockPaperScissors = () => {
       const updatedPet = {
         ...pet,
         health: res.health,
-        lastInteractionAt: res.lastInteractionAt,
+        //lastInteractionAt: res.lastInteractionAt,
       };
       setPet(updatedPet);
       localStorage.setItem("currentPet", JSON.stringify(updatedPet));

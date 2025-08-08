@@ -37,7 +37,7 @@ export const hungryEmail = internalAction({
       if (!updatedPet) {
         continue;
       }
-      await sleep(1000);
+      await sleep(2000);
       await ctx.runAction(internal.internalActions.sendEmail.sendEmail, {
         email: user.email,
         subject: `Atomi-Gotchi: 🍔 It's time to feed your pet!`,
